@@ -292,6 +292,39 @@ bool OsqpEigen::Solver::updateGradient(
     return true;
 }
 
+OsqpEigen::ErrorExitFlag OsqpEigen::Solver::computeAdjointDerivative(
+    Eigen::Ref<Eigen::Matrix<c_float, Eigen::Dynamic, 1>> dx,
+    Eigen::Ref<Eigen::Matrix<c_float, Eigen::Dynamic, 1>> dy_l,
+    Eigen::Ref<Eigen::Matrix<c_float, Eigen::Dynamic, 1>> dy_u) {
+
+    if (!m_isSolverInitialized)
+    {
+        debugStream() << "[OsqpEigen::Solver::computeAdjointDerivative] The solver is not initialized"
+                      << std::endl;
+        return OsqpEigen::ErrorExitFlag::WorkspaceNotInitError;
+    }
+
+    if (dx.size() != getData()->n || dy_l.size() != dy_u.size() || dy_l.size() != getData()->m) {
+        debugStream() << "[OsqpEigen::Solver::computeAdjointDerivative] Size mis-match"
+                      << std::endl;
+        return OsqpEigen::ErrorExitFlag::WorkspaceNotInitError;
+    }
+
+    return static_cast<ErrorExitFlag>(
+        osqp_adjoint_derivative_compute(m_solver.get(), dx.data(), dy_l.data(), dy_u.data()));
+}
+
+OsqpEigen::ErrorExitFlag OsqpEigen::Solver::adjointDerivativeGetVec(
+    Eigen::Ref<Eigen::Matrix<c_float, Eigen::Dynamic, 1>> dq,
+    Eigen::Ref<Eigen::Matrix<c_float, Eigen::Dynamic, 1>> dl,
+    Eigen::Ref<Eigen::Matrix<c_float, Eigen::Dynamic, 1>> du) {
+
+    // TODO: Check sizes
+
+    return static_cast<ErrorExitFlag>(
+        osqp_adjoint_derivative_get_vec(m_solver.get(), dq.data(), dl.data(), du.data()));
+}
+
 bool OsqpEigen::Solver::updateLowerBound(
     const Eigen::Ref<const Eigen::Matrix<c_float, Eigen::Dynamic, 1>>& lowerBound)
 {

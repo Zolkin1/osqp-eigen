@@ -27,3 +27,8 @@ add_osqpeigen_test(
   SOURCES MPCUpdateMatricesTest.cpp
   LINKS OsqpEigen::OsqpEigen
   COMPILE_DEFINITIONS _USE_MATH_DEFINES)
+
+add_osqpeigen_test(
+    NAME Derivatives
+    SOURCES DerivativeTest.cpp
+    LINKS OsqpEigen::OsqpEigen)

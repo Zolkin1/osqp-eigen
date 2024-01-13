@@ -264,6 +264,19 @@ public:
     bool updateLinearConstraintsMatrix(
         const Eigen::SparseCompressedBase<Derived>& linearConstraintsMatrix);
 
+    OsqpEigen::ErrorExitFlag computeAdjointDerivative(
+        Eigen::Ref<Eigen::Matrix<c_float, Eigen::Dynamic, 1>> dx,
+        Eigen::Ref<Eigen::Matrix<c_float, Eigen::Dynamic, 1>> dy_l,
+        Eigen::Ref<Eigen::Matrix<c_float, Eigen::Dynamic, 1>> dy_u);
+
+    template <typename Derived>
+    OsqpEigen::ErrorExitFlag adjointDerivativeGetMat(Eigen::SparseMatrix<Derived>& dP,
+                                                     Eigen::SparseMatrix<Derived>& dA);
+
+    OsqpEigen::ErrorExitFlag adjointDerivativeGetVec(Eigen::Ref<Eigen::Matrix<c_float, Eigen::Dynamic, 1>> dq,
+                                                     Eigen::Ref<Eigen::Matrix<c_float, Eigen::Dynamic, 1>> dl,
+                                                     Eigen::Ref<Eigen::Matrix<c_float, Eigen::Dynamic, 1>> du);
+
     /**
      * Set the entire
      * @param linearConstraintsMatrix is the linear constraint matrix A

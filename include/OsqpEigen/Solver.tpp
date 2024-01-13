@@ -297,6 +297,29 @@ bool OsqpEigen::Solver::updateLinearConstraintsMatrix(
     return true;
 }
 
+template<typename Derived>
+OsqpEigen::ErrorExitFlag OsqpEigen::Solver::adjointDerivativeGetMat(
+    Eigen::SparseMatrix<Derived>& dP,
+    Eigen::SparseMatrix<Derived>& dA) {
+
+    csc* osqpdA = csc_spalloc(dA.rows(), dA.cols(), dA.nonZeros(), 1, 1);
+    csc_set_data(osqpdA, m_data->getData()->A->m, m_data->getData()->A->n, m_data->getData()->A->nzmax,
+                 m_data->getData()->A->x, m_data->getData()->A->i, m_data->getData()->A->p);
+
+    csc* osqpdP = csc_spalloc(dP.rows(), dP.cols(), dP.nonZeros(), 1, 1);
+    csc_set_data(osqpdP, m_data->getData()->P->m, m_data->getData()->P->n, m_data->getData()->P->nzmax,
+                 m_data->getData()->P->x, m_data->getData()->P->i, m_data->getData()->P->p);
+
+    ErrorExitFlag flag = static_cast<ErrorExitFlag>(osqp_adjoint_derivative_get_mat(m_solver.get(), osqpdP, osqpdA));
+    OsqpEigen::SparseMatrixHelper::osqpSparseMatrixToEigenSparseMatrix(osqpdA, dA);
+    OsqpEigen::SparseMatrixHelper::osqpSparseMatrixToEigenSparseMatrix(osqpdP, dP);
+
+    free(osqpdA);
+    free(osqpdP);
+
+    return flag;
+}
+
 template <typename T, int n, int m>
 bool OsqpEigen::Solver::setWarmStart(const Eigen::Matrix<T, n, 1>& primalVariable,
                                      const Eigen::Matrix<T, m, 1>& dualVariable)

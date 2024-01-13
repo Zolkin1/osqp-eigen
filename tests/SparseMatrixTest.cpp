@@ -6,7 +6,7 @@
  */
 
 // Catch2
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 #include <OsqpEigen/OsqpEigen.h>
 #include <osqp.h>

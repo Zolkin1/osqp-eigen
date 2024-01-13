@@ -11,3 +11,6 @@ tramp
 #build
 /build/
 *.user
+
+/.idea/
+/cmake-*

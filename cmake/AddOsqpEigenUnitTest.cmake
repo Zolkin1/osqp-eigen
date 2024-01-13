@@ -30,7 +30,7 @@ endif()
 if (OSQPEIGEN_COMPILE_tests)
     configure_file(cmake/Catch2Main.cpp.in ${CMAKE_BINARY_DIR}/Testing/Catch2Main.cpp)
     add_library(CatchTestMain ${CMAKE_BINARY_DIR}/Testing/Catch2Main.cpp)
-    target_link_libraries(CatchTestMain PUBLIC Catch2::Catch2)
+    target_link_libraries(CatchTestMain PUBLIC Catch2::Catch2WithMain)
 endif()
 
 
